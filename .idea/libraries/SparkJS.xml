@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SparkJS" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/lib/spark" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/spark" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

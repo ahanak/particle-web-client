@@ -1,0 +1,141 @@
+<h1>Devices</h1>
+<div ng-controller="EventsCtr">
+    <p>
+        <button class="btn btn-warning" ng-click="clear()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Clear
+        </button>
+    </p>
+
+    <div class="row">
+
+        <!-- left side grid -->
+        <div class="col-md-2 col-xs-12 device">
+            <!-- filter panel -->
+            <div class="panel panel-default">
+                <!-- headline is device name + status -->
+                <div class="panel-heading" data-toggle="collapse" data-target="#filter-body" role="button">
+                    <h2 class="panel-title">Filter</h2>
+                    <span class="caret hidden-md hidden-lg"></span>
+                </div>
+
+
+                <div class="panel-body panel-collapse hidden-sm hidden-xs" id="filter-body">
+                    <p>
+                        <h3>From: </h3>
+                        <div ng-repeat="(deviceId, deviceName) in devices" class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="deviceFilters[deviceId]"> {{deviceName}}
+                            </label>
+                        </div>
+                        <button ng-click="deviceFilters = {}" class="btn btn-xs btn-warning" ng-disabled="!anyFieldTrue(deviceFilters)">Clear</button><!-- TODO: disable -->
+                    </p>
+
+                    <p>
+                        <h3>Event Name:</h3>
+                        <label class="sr-only" for="filterNameText">Search string</label>
+                        <input ng-model="nameFilter.text" type="search" class="form-control" id="filterNameText" placeholder="search">
+                        <label class="sr-only" for="filterNameMethod">Comparison method</label>
+                        <select ng-model="nameFilter.method" id="filterNameMethod" class="form-control">
+                            <option value="equals">equals</option>
+                            <option value="contains">contains</option>
+                            <option value="regex">regex match</option>
+                        </select>
+                        <button ng-click="clearAdvFilter(nameFilter)" class="btn btn-xs btn-warning" ng-disabled="!nameFilter.text">Clear</button>
+                    </p>
+
+                    <p>
+                        <h3>Event Data:</h3>
+                        <label class="sr-only" for="filterDataText">Search string</label>
+                        <input ng-model="dataFilter.text" type="search" class="form-control" id="filterDataText" placeholder="search">
+                        <label class="sr-only" for="filterDataMethod">Comparison method</label>
+                        <select ng-model="dataFilter.method" id="filterDataMethod" class="form-control">
+                            <option value="equals">equals</option>
+                            <option value="contains">contains</option>
+                            <option value="regex">regex match</option>
+                        </select>
+                        <!--<adv-search model="dataFilter" name="dataFilter"></adv-search>-->
+                        <button ng-click="dataFilter = {}" class="btn btn-xs btn-warning" ng-disabled="!dataFilter.text">Clear</button>
+                    </p>
+
+                </div> <!-- panel body -->
+            </div> <!-- panel -->
+        </div> <!-- col -->
+
+
+        <!-- right side grid -->
+        <div class="col-md-10 col-xs-12 device">
+
+            <div class="panel panel-default">
+                <!-- headline is device name + status -->
+                <div class="panel-heading" data-toggle="collapse" data-target="#publish-body" role="button">
+                    <h2 class="panel-title">Publish Events</h2>
+                    <span class="caret hidden-md hidden-lg"></span>
+                </div>
+
+
+                <div class="panel-body panel-collapse hidden-sm hidden-xs" id="publish-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only" for="field-name">Name</label>
+                            <input ng-model="eventform.name" type="text" class="form-control" id="field-name" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="field-data">Data</label>
+                            <input ng-model="eventform.data" type="text" class="form-control" id="field-data" placeholder="Data">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="eventform.private" type="checkbox"> private
+                            </label>
+                        </div>
+
+                        <button ng-click="publishEvent(eventform)" type="submit" class="btn btn-primary">Publish</button>
+
+                        <button class="btn btn-warning" ng-click="clearPublishForm()">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Clear
+                        </button>
+                    </form>
+                </div> <!-- panel body -->
+            </div> <!-- panel -->
+
+            <!-- events panel -->
+            <div class="panel panel-default">
+                <!-- headline is device name + status -->
+                <div class="panel-heading">
+                    <h2 class="panel-title">Events</h2>
+                </div>
+
+
+                <div class="panel-body events">
+                    <div ng-show="events.length == 0">
+                        No events available.
+                    </div>
+
+                    <!-- events table -->
+                    <div ng-show="events.length > 0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Time</th>
+                                    <th>Event</th>
+                                    <th>From</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="event in events | enumFilter:deviceFilters:'coreid' | advSearch:nameFilter:'name' | advSearch:dataFilter:'data'">
+                                    <td class="hidden-xs">{{event.published_at}}</td>
+                                    <td>{{event.name}}</td>
+                                    <td>{{event.deviceName}}</td>
+                                    <td>{{event.data}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div> <!-- panel body -->
+            </div> <!-- panel -->
+        </div> <!-- col -->
+    </div> <!-- row -->
+    <!--<pre>error = {{ error | json }}</pre>-->
+</div>

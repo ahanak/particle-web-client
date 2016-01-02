@@ -1,0 +1,119 @@
+<h1>Devices</h1>
+<div ng-controller="DevicesCtrl">
+    <p>
+        <button class="btn btn-primary" ng-click="list()">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Reload
+        </button>
+        <button class="btn btn-warning" ng-click="clear()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Clear
+        </button>
+    </p>
+    <!--<pre>{{devices | json}}</pre>-->
+
+    <div class="row">
+
+        <!-- device -->
+        <div ng-repeat="device in devices">
+            <div class="col-md-6 col-xs-12 device">
+                <div class="panel panel-default">
+
+                    <!-- headline is device name + status -->
+                    <div class="panel-heading">
+                        <h2 class="panel-title">{{device.name}} </h2>
+                        <span class="label-success state pull-right" ng-if="device.connected">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            <span class="hidden-xs"> connected</span>
+                        </span>
+                        <span class="label-danger state pull-right" ng-if="!device.connected">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <span class="hidden-xs"> disconnected</span>
+                        </span>
+                    </div>
+
+
+                    <div class="panel-body">
+
+                        <!-- variables -->
+                        <div ng-repeat="(variable, type) in device.variables" class="variable">
+                            <h3 ng-show="$first">Variables</h3>
+                            <form class="form-inline" ng-submit="readVariable(device.id,variable)">
+                                <div class="form-group row">
+                                    <div class="col-md-9 col-xs-9">
+                                        <div class="input-group variable-group">
+                                            <label for="variable_{{device.id + variable}}" class="sr-only">{{variable}}</label>
+                                            <code class="input-group-addon variable-name">
+                                                <span class="hidden-xs">{{type}}</span>
+                                                <span>{{variable}}</span>
+                                            </code>
+
+                                            <input type="text" class="form-control variable-value"
+                                                   id="variable_{{device.id + variable}}"
+                                                   placeholder="unknown"
+                                                   readonly ng-model="variableValues[device.id + variable]">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3 nospace">
+                                        <button type="submit" class="btn btn-info">
+                                            <i class="glyphicon glyphicon-cloud-download" aria-hidden="true"></i> Read
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+
+                        <!-- functions -->
+                        <div ng-repeat="function in device.functions" class="function">
+                            <h3 ng-show="$first">Functions</h3>
+                            <form class="form-inline" ng-submit="callFunction(device.id,function,functionArgs[device.id + function])">
+                                <div class="form-group row">
+                                    <div class="col-md-9 col-xs-9">
+                                        <div class="input-group function-group">
+                                            <label for="function_{{device.id + function}}" class="sr-only">{{functions}}</label>
+                                            <code class="input-group-addon function-name">{{function}}</code>
+                                            <input type="text" class="form-control function-value"
+                                                   id="function_{{device.id + function}}"
+                                                   placeholder="function arguments"
+                                                   ng-model="functionArgs[device.id + function]" >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3 nospace">
+                                        <button type="submit" class="btn btn-info">
+                                            <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> Call
+                                        </button>
+                                        <code ng-show="functionResults[device.id + function]"><i class="glyphicon glyphicon-arrow-right"></i> {{functionResults[device.id + function]}}</code>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+
+                        <!-- events -->
+                        <div ng-show="events[device.id] && events[device.id].length > 0">
+                            <h3>Events</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden-xs">Time</th>
+                                        <th>Event</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="event in events[device.id]">
+                                        <td class="hidden-xs">{{event.published_at}}</td>
+                                        <td>{{event.name}}</td>
+                                        <td>{{event.data}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div> <!-- panel body -->
+                </div> <!-- panel -->
+            </div> <!-- grid / device -->
+        </div> <!-- ng-repeat devices -->
+    </div> <!-- row -->
+    <!--<pre>error = {{ error | json }}</pre>-->
+</div>
