@@ -7,6 +7,7 @@
 
     <title>Particle Web Client</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -20,8 +21,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <div class="visible-xs">
+                <div loader class="navbar-toggle spinner-xs-box">
+                    <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                </div>
+            </div>
             <a class="navbar-brand" href="#">Particle Web Client</a>
         </div>
+
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li ng-class="isActive('/devices')">
@@ -41,7 +48,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="https://www.a-hanak.de">&copy; André Hanak</a></li>
             </ul>
+
+            <p class="nav navbar-text hidden-xs navbar-right spinner-box">
+                <i loader class="fa fa-spinner fa-pulse fa-fw"></i>
+            </p>
         </div><!--/.nav-collapse -->
+
+
     </div>
 </nav>
 

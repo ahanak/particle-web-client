@@ -14,7 +14,11 @@ app.config(function($routeProvider, $httpProvider) {
         .otherwise({ redirectTo: '/login' });
 
 
+    // detect authorization errors
     $httpProvider.interceptors.push('sparkapiInterceptor');
+
+    // trigger spinner
+    $httpProvider.interceptors.push('spinnerInterceptor');
 
 });
 
@@ -115,6 +119,37 @@ app.factory('sparkapiInterceptor', function($rootScope, $q) {
                 $rootScope.$broadcast('unauthorized');
             }
             return $q.reject(reject.data);
+        }
+    };
+});
+
+/**
+ * Show spinner while $http is working.
+ * See http://stackoverflow.com/questions/17838708/implementing-loading-spinner-using-httpinterceptor-and-angularjs-1-1-5
+ */
+app.factory('spinnerInterceptor', function ($q, $rootScope) {
+    var numLoadings = 0;
+    return {
+        request: function (config) {
+            numLoadings++;
+
+            // Show loader
+            $rootScope.$broadcast("loader_show");
+            return config || $q.when(config)
+        },
+        response: function (response) {
+            if ((--numLoadings) === 0) {
+                // Hide loader
+                $rootScope.$broadcast("loader_hide");
+            }
+            return response || $q.when(response);
+        },
+        responseError: function (response) {
+            if (!(--numLoadings)) {
+                // Hide loader
+                $rootScope.$broadcast("loader_hide");
+            }
+            return $q.reject(response);
         }
     };
 });
@@ -516,6 +551,7 @@ app.filter('enumFilter', function($filter) {
 
 /******************************************** Directives (HTML-Tags) for all pages ************************************/
 
+/** Display a device panel using <device-panel device="myDevice">...</device-panel> */
 app.directive('devicePanel', [function() {
     return {
         templateUrl : 'tpl/device-panel.tpl.html',
@@ -528,3 +564,16 @@ app.directive('devicePanel', [function() {
         transclude: true
     }
 }]);
+
+/** Display a spinner/loader using something like <img loader... /> */
+app.directive("loader", function ($rootScope) {
+        return function ($scope, element, attrs) {
+            $scope.$on("loader_show", function () {
+                return element.show();
+            });
+            return $scope.$on("loader_hide", function () {
+                return element.hide();
+            });
+        };
+    }
+);

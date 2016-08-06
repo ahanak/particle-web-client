@@ -17,6 +17,23 @@ h2.panel-title {
     /*font-weight: bold;*/
 }
 
+/* spinner-box for mobile view */
+.spinner-xs-box {
+    padding: 0px;
+    width: 34px;
+    height: 34px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 34px;
+    background: transparent !important;
+}
+
+/* keep width even if inner icon is not present */
+.spinner-box {
+    width: 1.5em;
+    text-align: center;
+}
+
 /*@media (max-width: @screen-sm) {
     body{font-size: 14px;}
 }*/
