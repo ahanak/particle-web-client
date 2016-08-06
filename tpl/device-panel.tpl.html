@@ -1,0 +1,20 @@
+<div class="panel panel-default">
+
+    <!-- headline is device name + status -->
+    <div class="panel-heading">
+        <h2 class="panel-title">{{device.name}} </h2>
+                        <span class="label-success state pull-right" ng-if="device.connected">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            <span class="hidden-xs"> connected</span>
+                        </span>
+                        <span class="label-danger state pull-right" ng-if="!device.connected">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <span class="hidden-xs"> disconnected</span>
+                        </span>
+    </div>
+
+
+    <div class="panel-body" ng-transclude="">
+        <!-- contents of <device-panel> tag go here -->
+    </div> <!-- panel body -->
+</div> <!-- panel -->

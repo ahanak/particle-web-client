@@ -513,3 +513,18 @@ app.filter('enumFilter', function($filter) {
         return filterFilter(input, filter_expression, comperator);
     };
 });
+
+/******************************************** Directives (HTML-Tags) for all pages ************************************/
+
+app.directive('devicePanel', [function() {
+    return {
+        templateUrl : 'tpl/device-panel.tpl.html',
+        // this is new to AngularJS 1.3
+        /*bindToController: true,*/
+        scope: {
+            device: '='
+        },
+        restrict: 'E',
+        transclude: true
+    }
+}]);
