@@ -437,7 +437,6 @@ app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', 'appselecto
     /** Select the app template, which handles that device, see appselector service. */
     $scope.selectTemplate = function(device) {
         var template = appselector.selectTemplate(device);
-        console.log('Selected template for ' + device.name + ': ' + template);
         return template;
     };
 
