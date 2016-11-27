@@ -1,0 +1,40 @@
+<!-- Particle-Pixel-Controller app -->
+
+<style lang="stylesheet">
+    .equal-space {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+</style>
+
+<div ng-controller="PixelCtrl" ng-init="setDevice($parent.device)">
+    <code class="pull-right" ng-show="fps != null && turnedOn != false">{{fps|number:0}} fps</code>
+
+    <button class="btn btn-danger btn-lg" ng-click="turnOff()" ng-disabled="turnedOn == false">
+        <i class="fa fa-power-off" aria-hidden="true"></i>
+        Aus
+    </button>
+
+    <button class="btn btn-success btn-lg" ng-click="turnOn()" ng-disabled="turnedOn == true">
+        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+        An
+    </button>
+
+    <button class="btn btn-info btn-lg" ng-click="nextPreset()" ng-disabled="turnedOn == false">
+        <i class="fa fa-forward" aria-hidden="true"></i>
+        Nächstes Programm
+    </button>
+
+    <h3>Programme</h3>
+    <div class="row">
+            <div class="col-md-6 equal-space" ng-repeat="(progIndex, progName) in programButtons">
+                <button class="btn btn-block btn-lg"
+                        ng-click="loadPreset(progIndex)"
+                        ng-class="{'active btn-primary': preset == progIndex, 'btn-default': preset != progIndex}"
+                        ng-disabled="turnedOn == false">
+                    <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                    {{progName}}
+                </button>
+            </div>
+    </div>
+</div>
