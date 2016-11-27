@@ -1,0 +1,28 @@
+<!-- Tinker code -->
+<div ng-controller="TinkerCtrl" ng-init="setDevice(device)">
+    <div ng-repeat="(pinName, pinData) in pins">
+
+        <form class="form-inline" ng-submit="">
+            <div class="form-group row">
+                <div class="col-md-9 col-xs-9">
+                    <div class="input-group function-group">
+                        <label for="pin_{{pinName}}" class="sr-only">{{pinName}}</label>
+                        <code class="input-group-addon function-name">{{pinName}}</code>
+                        <input type="text" class="form-control function-value"
+                               id="pin_{{pinName}}"
+                               placeholder="value"
+                               ng-model="pins[pinName].value" >
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-3 nospace">
+                    <button type="submit" class="btn btn-info">
+                        <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span> Call
+                    </button>
+
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+
+    </div>
+</div>

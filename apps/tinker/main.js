@@ -1,0 +1,1 @@
+console.log('Loaded apps/tinker/main.js !');

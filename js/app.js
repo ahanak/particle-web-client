@@ -1,8 +1,23 @@
+angular.forEach(enabledApps, function(app) {
+    // load the javascript based on a fixed directory structure
+    var url = 'apps/' + app + '/main.js';
+    $.ajax({
+        url: url,
+        dataType: "script",
+        async: false
+    });
+    console.log("Loaded " + url + '?');
+    //$.getScript()
+    //    .done(function(script, textStatus) { console.log('Loaded ' + app + ' app'); scriptLoaded = true;})
+    //    .fail(function( jqxhr, settings, exception ) {console.warn('Failed to load ' + app + ' app'); scriptLoaded = false;});
+});
+
+
 /** This is our main module for the particle web client application */
 app = angular.module("ParticleWebClient", ['ngRoute', 'ngStorage']);
 
 /** configure our routes */
-app.config(function($routeProvider, $httpProvider) {
+app.config(function($routeProvider, $httpProvider, appselectorProvider) {
     $routeProvider
         .when('/devices', { templateUrl: 'tpl/devices.tpl.html', resolve:{
             authorize: function(loginService) { return loginService.authorize(); }
@@ -13,6 +28,23 @@ app.config(function($routeProvider, $httpProvider) {
         .when('/login', { templateUrl: 'tpl/login.tpl.html' })
         .otherwise({ redirectTo: '/login' });
 
+    // load the main.js script for each enabled plugin and create a route with the plugin name which renders the main.tpl.html
+    angular.forEach(enabledPlugins, function(plugin) {
+        // load the javascript based on a fixed directory structure
+        $.getScript('plugins/' + plugin + '/main.js')
+            .done(function(script, textStatus) { console.log('Loaded ' + plugin + ' plugin')})
+            .fail(function( jqxhr, settings, exception ) {console.warn('Failed to load ' + plugin + ' plugin')});
+        $routeProvider.when('/' + plugin, {templateUrl: 'plugins/' + plugin + '/main.tpl.html', resolve: {
+            authorize: function(loginService) { return loginService.authorize(); }
+        }})
+    });
+
+
+    angular.forEach(enabledApps, function(app) {
+        $.getJSON('apps/' + app + '/config.json', function(data) {
+            appselectorProvider.addApp(data, 'apps/' + app + '/main.tpl.html');
+        });
+    });
 
     // detect authorization errors
     $httpProvider.interceptors.push('sparkapiInterceptor');
@@ -20,6 +52,42 @@ app.config(function($routeProvider, $httpProvider) {
     // trigger spinner
     $httpProvider.interceptors.push('spinnerInterceptor');
 
+});
+
+app.provider('appselector', function() {
+    var currentApps = [];
+    this.addApp = function (app, template) {
+        app.template = template;
+        currentApps.push(app);
+    };
+
+    this.$get = function() {
+
+        return {
+            selectTemplate: function (device) {
+                var template = 'tpl/general_device.tpl.html';
+                angular.forEach(currentApps, function (app) {
+                    var appMatches = true;
+                    angular.forEach(app.required.functions, function (requiredFunction) {
+                        if (device.functions.indexOf(requiredFunction) < 0) {
+                            appMatches = false;
+                        }
+                    });
+                    angular.forEach(app.required.variables, function (requiredVariable) {
+                        if (device.variables.indexOf(requiredVariable) < 0) {
+                            appMatches = false;
+                        }
+                    });
+                    //TODO: name and firmware
+                    if (appMatches == true) {
+                        template = app.template;
+                    }
+                });
+                return template;
+            }
+
+        }
+    }
 });
 
 /* ************************************************ Sparkapi ******************************************************** */
@@ -226,6 +294,8 @@ app.controller('NavibarCtrl', ['$rootScope', '$scope', '$location', 'loginServic
         return ($location.path().substr(0, path.length) === path) ? 'active' : false;
     };
 
+    $scope.plugins = enabledPlugins;
+
     /** Log the current user out and redirect to login form. */
     $scope.logout = function() {
         if(loginService.loggedIn) {
@@ -251,13 +321,12 @@ app.controller('ErrorCtrl', ['$rootScope', '$scope', '$location', 'loginService'
 
     $rootScope.$on('http_error', function(event, httperror) {
         var sparkerror = httperror.data;
-        var message = httperror.statusText + ' (' + httperror.status + ')';
+        var message = httperror.config.url + ' ' + httperror.statusText + ' (' + httperror.status + ')';
         if(sparkerror && sparkerror.error_description) {
              message += " - " + sparkerror.error_description;
         }
         $scope.message = message;
     });
-
 }]);
 
 /* ************************************************ LoginCtr ******************************************************** */
@@ -298,7 +367,7 @@ app.controller('LoginCtrl', ['$scope', '$location', '$localStorage', 'sparkapi',
 /* ************************************************ DevicesCtr ****************************************************** */
 
 /** The devices controller handles the devices page with possibilities to get variables, call functions and show device events. */
-app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', function($scope, loginService, sparkapi) {
+app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', 'appselector', function($scope, loginService, sparkapi, appselector) {
 
     /** Query the device list from the api, then query details for each device and store that information in the scope. */
     $scope.list = function() {
@@ -370,6 +439,13 @@ app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', function($s
             },
             function(error) {}
         )
+    };
+
+    /** Select the app template, which handles that device, see appselector service. */
+    $scope.selectTemplate = function(device) {
+        var template = appselector.selectTemplate(device);
+        console.log('Selected template for ' + device.name + ': ' + template);
+        return template;
     };
 
     /** Reset the $scope. */
@@ -567,13 +643,116 @@ app.directive('devicePanel', [function() {
 
 /** Display a spinner/loader using something like <img loader... /> */
 app.directive("loader", function ($rootScope) {
-        return function ($scope, element, attrs) {
-            $scope.$on("loader_show", function () {
-                return element.show();
-            });
-            return $scope.$on("loader_hide", function () {
-                return element.hide();
-            });
-        };
-    }
-);
+    return function ($scope, element, attrs) {
+        $scope.$on("loader_show", function () {
+            return element.show();
+        });
+        return $scope.$on("loader_hide", function () {
+            return element.hide();
+        });
+    };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** The devices controller handles the devices page with possibilities to get variables, call functions and show device events. */
+app.controller('TinkerCtrl', ['$scope', '$http', function($scope, $http) {
+    $scope.tinkerDevice = null;
+    var allPins = null;
+    $http.get('apps/tinker/pins.json').then(function(res) {
+        allPins = res.data;
+        $scope.updatePins();
+    });
+
+    /** Read the digital value of the given port and store the result in $scope.pins */
+    $scope.digitalRead = function(port) {
+        sparkapi.callFunction(device.id, 'digitalread').then(
+            function(result) {
+                $scope.pins[port].value = result.data.return_value;
+            },
+            function(error) {}
+        );
+    };
+
+    /** Read the digital value of the given port and store the result in $scope.pins */
+    $scope.analogRead = function(port) {
+        if($scope.pins[port].type != 'analog') {return;}
+
+        sparkapi.callFunction($scope.device.id, 'analogread', port).then(
+            function(result) {
+                $scope.pins[port].value = result.data.return_value;
+            },
+            function(error) {}
+        );
+    };
+
+    /** Read the digital value of the given port and store the result in $scope.pins */
+    $scope.digitalWrite = function(port,value) {
+        var digitalValue = (value ? 'HIGH' : 'LOW');
+        sparkapi.callFunction($scope.device.id, 'digitalwrite', port + ',' + digitalValue).then(
+            function(result) {
+                if(result.data.return_value != 1) {
+                    console.log("Error in digitalWrite: " + result.data.return_value);
+                };
+            },
+            function(error) {}
+        );
+    };
+
+    /** Read the digital value of the given port and store the result in $scope.pins */
+    $scope.analogWrite = function(port,value) {
+        sparkapi.callFunction(device.id, 'analogwrite', port + ',' + value).then(
+            function(result) {
+                if(result.data.return_value != 1) {
+                    console.log("Error in analogWrite: " + result.data.return_value);
+                };
+            },
+            function(error) {}
+        );
+    };
+
+    $scope.setDevice = function (device) {
+        $scope.tinkerDevice = device;
+        $scope.updatePins();
+    };
+
+    $scope.updatePins = function() {
+        if(allPins != null && $scope.tinkerDevice != null) {
+
+            $scope.pins = allPins[$scope.tinkerDevice.platform_id];
+        }
+    };
+
+    /** Reset the $scope. */
+    $scope.clear = function() {
+        $scope.functionResults = {};
+        $scope.functionArgs = {};
+        $scope.variableValues = {};
+        $scope.events = {};
+    };
+
+    //$scope.clear();
+    //$scope.list();
+
+}]);

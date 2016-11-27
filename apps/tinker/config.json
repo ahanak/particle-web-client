@@ -1,0 +1,16 @@
+{
+  "name": "Tinker",
+  "required": {
+    "functions": [
+      "digitalread",
+      "digitalwrite",
+      "analogread",
+      "analogwrite"
+    ],
+    "variables": [
+
+    ],
+    "deviceName": "",
+    "firmwareName": ""
+  }
+}

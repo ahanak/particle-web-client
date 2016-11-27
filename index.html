@@ -37,6 +37,10 @@
                 <li ng-class="isActive('/events')">
                     <a href="#/events"><span class="glyphicon glyphicon-flash"></span> Events</a>
                 </li>
+                <!-- Include a menu entry for each plugin -->
+                <li ng-repeat="plugin in plugins" ng-class="isActive('/' + plugin)">
+                    <a href="#/{{plugin}}" ng-include="'plugins/' + plugin + '/menu.tpl.html'"></a>
+                </li>
                 <li ng-class="isActive('/login')" ng-show="!loginService.loggedIn">
                     <a href="#/login"><span class=" glyphicon glyphicon-log-in"></span> Sign-in</a>
                 </li>
@@ -78,6 +82,8 @@
 <script src="lib/angular/angular-route.min.js"></script>
 <script src="lib/angular/ngStorage.min.js"></script>
 <script src="lib/spark/spark.min.js"></script>
+<script src="plugins/enabled_plugins.js"></script>
+<script src="apps/enabled_apps.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

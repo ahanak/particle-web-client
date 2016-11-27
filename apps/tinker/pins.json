@@ -1,0 +1,135 @@
+{
+  "0": {
+    "A0": {
+      "type": "analog",
+      "value": null
+    },
+    "A1": {
+      "type": "analog",
+      "value": null
+    },
+    "A2": {
+      "type": "analog",
+      "value": null
+    },
+    "A3": {
+      "type": "analog",
+      "value": null
+    },
+    "A4": {
+      "type": "analog",
+      "value": null
+    },
+    "A5": {
+      "type": "analog",
+      "value": null
+    },
+    "A6": {
+      "type": "analog",
+      "value": null
+    },
+    "A7": {
+      "type": "analog",
+      "value": null
+    },
+    "D0": {
+      "type": "digital",
+      "value": null
+    },
+    "D1": {
+      "type": "digital",
+      "value": null
+    },
+    "D2": {
+      "type": "digital",
+      "value": null
+    },
+    "D3": {
+      "type": "digital",
+      "value": null
+    },
+    "D4": {
+      "type": "digital",
+      "value": null
+    },
+    "D5": {
+      "type": "digital",
+      "value": null
+    },
+    "D6": {
+      "type": "digital",
+      "value": null
+    },
+    "D7": {
+      "type": "digital",
+      "value": null
+    }
+  },
+  "6": {
+    "A0": {
+      "type": "analog",
+      "value": null
+    },
+    "A1": {
+      "type": "analog",
+      "value": null
+    },
+    "A2": {
+      "type": "analog",
+      "value": null
+    },
+    "A3": {
+      "type": "analog",
+      "value": null
+    },
+    "A4": {
+      "type": "analog",
+      "value": null
+    },
+    "A5": {
+      "type": "analog",
+      "value": null
+    },
+    "A6": {
+      "type": "analog",
+      "value": null
+    },
+    "A7": {
+      "type": "analog",
+      "value": null
+    },
+    "D0": {
+      "type": "digital",
+      "value": null
+    },
+    "D1": {
+      "type": "digital",
+      "value": null
+    },
+    "D2": {
+      "type": "digital",
+      "value": null
+    },
+    "D3": {
+      "type": "digital",
+      "value": null
+    },
+    "D4": {
+      "type": "digital",
+      "value": null
+    },
+    "D5": {
+      "type": "digital",
+      "value": null
+    },
+    "D6": {
+      "type": "digital",
+      "value": null
+    },
+    "D7": {
+      "type": "digital",
+      "value": null
+    }
+  }
+
+}
