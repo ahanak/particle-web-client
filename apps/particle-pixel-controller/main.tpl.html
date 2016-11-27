@@ -13,6 +13,10 @@
         overflow-wrap: break-word;
         white-space: normal;
     }
+
+    .brightness-slider .slider-selection {
+        background: #EEEE00;
+    }
 </style>
 
 <div ng-controller="PixelCtrl" ng-init="setDevice($parent.device)">
@@ -32,6 +36,9 @@
         <i class="fa fa-forward" aria-hidden="true"></i>
         Nächstes Programm
     </button>
+
+    <h3>Helligkeit</h3>
+    <slider class="brightness-slider" ng-model="brightness" min="0" step="1" max="255" value="testOptions.value"></slider>
 
     <h3>Programme</h3>
     <div class="row">

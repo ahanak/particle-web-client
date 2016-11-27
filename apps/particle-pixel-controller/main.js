@@ -9,6 +9,7 @@ app.controller('PixelCtrl', ['$scope', '$http', '$interval', 'sparkapi', functio
     $scope.numPresets = 0;
     $scope.turnedOn = "unknown";
     $scope.fps = null;
+    $scope.brightness = -1;
 
     $http.get('apps/particle-pixel-controller/programs.json').then(function(res) {
         $scope.programNames = res.data;
@@ -95,6 +96,21 @@ app.controller('PixelCtrl', ['$scope', '$http', '$interval', 'sparkapi', functio
         }
         $scope.programButtons = buttons;
     }
+
+    var brightnessStop = null;
+    $scope.$watch('brightness', function(){
+        if(brightnessStop != null) {
+            $interval.cancel(brightnessStop);
+            brightnessStop = null;
+        }
+        if($scope.brightness >= 0) {
+            brightnessStop = $interval(function () {
+                //console.log("Publishing " + $scope.brightness.toString());
+                sparkapi.callFunction($scope.device.id, 'setMaster', $scope.brightness.toString());
+            }, 300, 1);
+        }
+    });
+
 
     /** Reset the $scope. */
     $scope.clear = function() {
