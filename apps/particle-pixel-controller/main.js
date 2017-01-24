@@ -27,7 +27,7 @@ app.controller('PixelCtrl', ['$scope', '$http', '$interval', 'sparkapi', functio
                 }
             );
         }
-    }, 10000);
+    }, 60000);
     $scope.$on('$destroy', function() {
         if(angular.isDefined(stopTimer)) {
             // Make sure that the interval is destroyed too

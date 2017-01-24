@@ -76,6 +76,7 @@ app.provider('appselector', function() {
                         template = app.template;
                     }
                 }
+                //console.log("Chosen template for device " + device.name + " is " + template);
                 return template;
             }
 
