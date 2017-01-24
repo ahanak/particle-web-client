@@ -1,0 +1,15 @@
+{
+  "Violett / Grün": ["2000FF", "00FF00"],
+  "Orange / Blau": ["FF2000", "0020FF"],
+  "Orange": ["FF2000","FF2000"],
+  "Hellblau": ["0070FF","0070FF"],
+  "Dunkelblau": ["0000FF","0000FF"],
+  "Violett" : ["3000FF", "3000FF"],
+  "Grün": ["00FF00", "00FF00"],
+  "Hellgrün": ["00FF70", "00FF70"],
+  "Rot": ["FF0000", "FF0000"],
+  "Gelb": ["FF6000", "FF6000"],
+  "Türkis": ["00FFFF", "00FFFF"],
+  "Kaltweiß": ["FFFFFF", "FFFFFF"],
+  "Warmweiß": ["FF9977", "FF9977"]
+}

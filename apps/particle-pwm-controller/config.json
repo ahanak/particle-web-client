@@ -1,0 +1,17 @@
+{
+  "name": "A-Hanak PWM",
+  "required": {
+    "functions": [
+      "turnOn",
+      "turnOff",
+      "setMaster",
+      "setColors",
+      "setChaser",
+      "defChaser"
+    ],
+    "variables": [
+    ],
+    "deviceName": "",
+    "firmwareName": ""
+  }
+}

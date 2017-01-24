@@ -1,0 +1,77 @@
+<!-- Particle-Pixel-Controller app -->
+
+<style lang="stylesheet">
+    div.equal-space {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    button.equal-space {
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+    button.program {
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
+    .brightness-slider .slider-selection {
+        background: #EEEE00;
+    }
+</style>
+
+<div ng-controller="PwmCtrl" ng-init="setDevice($parent.device)">
+
+    <button class="btn btn-danger btn-lg equal-space" ng-click="turnOff()" ng-disabled="turnedOn == false">
+        <i class="fa fa-power-off" aria-hidden="true"></i>
+        Aus
+    </button>
+
+    <button class="btn btn-success btn-lg equal-space" ng-click="turnOn()" ng-disabled="turnedOn == true">
+        <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+        An
+    </button>
+
+    <button class="btn btn-info btn-lg equal-space" ng-click="nextPreset()" ng-disabled="turnedOn == false">
+        <i class="fa fa-forward" aria-hidden="true"></i>
+        Nächstes Programm
+    </button>
+
+    <h3>Helligkeit</h3>
+    <slider class="brightness-slider" ng-model="brightness" min="0" step="1" max="255" value="testOptions.value" ng-disabled="turnedOn == false"></slider>
+
+    <h3>Szenen</h3>
+    <div class="row">
+            <div class="col-sm-6 col-xs-6 equal-space" ng-repeat="(name, colors) in scenes">
+                <button class="btn btn-block btn-lg program"
+                        ng-click="setColors(colors)"
+                        ng-disabled="turnedOn == false">
+                    <span class="hidden-xs">
+                        <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                    </span>
+                    {{name}}
+                </button>
+            </div>
+    </div>
+
+    <h3>Chaser</h3>
+    <div class="row">
+        <div class="col-sm-6 col-xs-6 equal-space" ng-repeat="(name, steps) in chasers">
+            <button ng-if="$first" class="btn btn-block btn-lg program"
+                    ng-click="defChaser()"
+                    ng-disabled="turnedOn == false">
+                    <span class="hidden-xs">
+                        <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                    </span>
+                Standard
+            </button>
+            <button class="btn btn-block btn-lg program"
+                    ng-click="setChaser(steps)"
+                    ng-disabled="turnedOn == false">
+                    <span class="hidden-xs">
+                        <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                    </span>
+                {{name}}
+            </button>
+        </div>
+    </div>
+</div>
