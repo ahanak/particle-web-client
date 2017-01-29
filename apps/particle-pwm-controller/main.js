@@ -64,7 +64,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
     $scope.setDevice = function (device) {
         $scope.device = device;
         if (device != null) {
-            sparkapi.registerDeviceEvents($scope.device.id, onEvent);
+            //sparkapi.registerDeviceEvents($scope.device.id, onEvent);
         }
     };
 
