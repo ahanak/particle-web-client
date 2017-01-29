@@ -4,6 +4,9 @@ app.config(function($routeProvider, $httpProvider, appselectorProvider) {
         .when('/devices', { templateUrl: 'tpl/devices.tpl.html', resolve:{
             authorize: function(loginService) { return loginService.authorize(); }
         }})
+        .when('/device/:deviceId', { templateUrl: 'tpl/device.tpl.html', resolve:{
+            authorize: function(loginService) { return loginService.authorize(); }
+        }})
         .when('/events', { templateUrl: 'tpl/events.tpl.html', resolve:{
             authorize: function(loginService) { return loginService.authorize(); }
         }})
@@ -361,48 +364,26 @@ app.controller('LoginCtrl', ['$scope', '$location', '$localStorage', 'sparkapi',
 /* ************************************************ DevicesCtr ****************************************************** */
 
 /** The devices controller handles the devices page with possibilities to get variables, call functions and show device events. */
-app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', 'appselector', function($scope, loginService, sparkapi, appselector) {
+app.controller('DevicesCtrl', ['$scope', '$routeParams', 'loginService', 'sparkapi', 'appselector',
+    function($scope, $routeParams, loginService, sparkapi, appselector) {
+
+    $scope.devices = [];
 
     /** Query the device list from the api, then query details for each device and store that information in the scope. */
     $scope.list = function() {
         $scope.devices = [];
+        $scope.selectedDevice = null;
         sparkapi.listDevices().then(
             function(result){
                 //console.log('API call completed on promise resolve: ', devices);
                 //$scope.devices = result.data;
                 angular.forEach(result.data, function(deviceEntry) {
-                    var deviceIndex = null;
-                    sparkapi.device(deviceEntry.id).then(
-                        function(result) {
-                            deviceIndex = $scope.devices.push(result.data) - 1;
-                            console.log(result.data);
-                        },
-                        function(error) {}
-                    );
-
+                    $scope.loadDevice(deviceEntry.id, false);
                     $scope.events[deviceEntry.id] = [];
-                    sparkapi.registerDeviceEvents(deviceEntry.id, function(data) {
-                        $scope.$apply(function() {
-                            //console.log(data);
-                            $scope.events[deviceEntry.id].push(data);
-                            while($scope.events[deviceEntry.id].length > 10) {
-                                $scope.events[deviceEntry.id].shift();
-                            }
-
-                            if(data.name == 'spark/status') {
-                                //reload
-                                sparkapi.device(deviceEntry.id).then(
-                                    function(result) {
-                                        if (deviceIndex != null) {
-                                            $scope.devices[deviceIndex] = result.data;
-                                            console.log(result.data);
-                                        }
-                                    },
-                                    function(error) {}
-                                );
-                            }
-                        });
-                    })
+                    if(deviceEntry.connected) {
+                        // TODO: Only if no template is loaded?
+                        //$scope.registerForEvents(deviceEntry.id)
+                    }
                 });
             },
             function(err) {
@@ -411,6 +392,54 @@ app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', 'appselecto
                 $scope.error = err.message;
             }
         );
+    };
+
+    $scope.loadDevice = function(id, selected) {
+        var deviceIndex = null;
+        sparkapi.device(id).then(
+            function(result) {
+                deviceIndex = $scope.devices.push(result.data) - 1;
+                //console.log(result.data);
+                if(selected) {
+                    $scope.selectedDevice = result.data;
+                }
+            },
+            function(error) {}
+        );
+
+    };
+
+    $scope.registerForEvents = function(id) {
+        sparkapi.registerDeviceEvents(id, function (data) {
+            $scope.$apply(function () {
+                //console.log(data);
+                $scope.events[id].push(data);
+                while ($scope.events[id].length > 10) {
+                    $scope.events[id].shift();
+                }
+
+                if (data.name == 'spark/status') {
+                    //reload
+                    sparkapi.device(id).then(
+                        function (result) {
+                            var length = $scope.devices.length();
+                            var deviceIndex = null;
+                            for(var i = 0; i < length; i++) {
+                                if($scope.devices[i].id == id) {
+                                    deviceIndex = i;
+                                }
+                            }
+                            if (deviceIndex != null) {
+                                $scope.devices[deviceIndex] = result.data;
+                                console.log(result.data);
+                            }
+                        },
+                        function (error) {
+                        }
+                    );
+                }
+            });
+        })
     };
 
     /** Call a function using the api and store the result in $scope.functionResults. */
@@ -450,7 +479,16 @@ app.controller('DevicesCtrl', ['$scope', 'loginService', 'sparkapi', 'appselecto
     };
 
     $scope.clear();
-    $scope.list();
+
+    if(typeof($routeParams.deviceId) == 'undefined') {
+        $scope.list();
+    } else {
+        console.log("Device id: " + $routeParams.deviceId);
+        console.log($routeParams);
+        $scope.loadDevice($routeParams.deviceId, true);
+        //TOODO: only register if default template is used
+        //$scope.registerForEvents($routeParams.deviceId)
+    }
 
 }]);
 

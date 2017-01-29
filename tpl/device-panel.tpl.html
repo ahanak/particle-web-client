@@ -2,7 +2,7 @@
 
     <!-- headline is device name + status -->
     <div class="panel-heading">
-        <h2 class="panel-title">{{device.name}} </h2>
+        <h2 class="panel-title"><a href="#/device/{{device.id}}">{{device.name}}</a></h2>
                         <span class="label-success state pull-right" ng-if="device.connected">
                             <i class="glyphicon glyphicon-ok"></i>
                             <span class="hidden-xs"> connected</span>
