@@ -17,19 +17,24 @@ app.controller('PixelCtrl', ['$scope', '$http', '$interval', 'sparkapi', functio
     });
 
     /** the timer is used to poll the fps variable periodically */
-    var stopTimer = $interval(function getFps() {
-        if($scope.device != null) {
-            sparkapi.readVariable($scope.device.id, 'fps').then(
-                function (result) {
-                    $scope.fps = result.data.result;
-                },
-                function (error) {
-                }
-            );
+    var stopTimer = null;
+    $scope.enableFps = function() {
+        function getFps() {
+            if ($scope.device != null) {
+                sparkapi.readVariable($scope.device.id, 'fps').then(
+                    function (result) {
+                        $scope.fps = result.data.result;
+                    },
+                    function (error) {
+                    }
+                );
+            }
         }
-    }, 60000);
+        getFps();
+        stopTimer = $interval(getFps(), 10000);
+    };
     $scope.$on('$destroy', function() {
-        if(angular.isDefined(stopTimer)) {
+        if(typeof(stopTimer) != 'undefined') {
             // Make sure that the interval is destroyed too
             $interval.cancel(stopTimer);
         }

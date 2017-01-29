@@ -21,6 +21,7 @@
 
 <div ng-controller="PixelCtrl" ng-init="setDevice($parent.device)">
     <code class="pull-right" ng-show="fps != null && turnedOn != false">{{fps|number:0}} fps</code>
+    <button class="pull-right btn btn-xs" ng-show="fps == null && turnedOn != false" ng-click="enableFps()">Show FPS</button>
 
     <button class="btn btn-danger btn-lg equal-space" ng-click="turnOff()" ng-disabled="turnedOn == false">
         <i class="fa fa-power-off" aria-hidden="true"></i>
