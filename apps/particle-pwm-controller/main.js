@@ -36,7 +36,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
         );
     };
 
-    /** Load a specified preset */
+    /** Set the specified colors. */
     $scope.setColors = function(colors_array) {
         sparkapi.callFunction($scope.device.id, 'setColors', colors_array.join(";")).then(
             function(result) {},
@@ -44,7 +44,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
         );
     };
 
-    /** Load the next preset */
+    /** Transmit a chaser to the stripe. */
     $scope.setChaser = function(steps_array) {
         sparkapi.callFunction($scope.device.id, 'setChaser', steps_array.join(';')).then(
             function(result) {},
@@ -52,8 +52,9 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
         );
     };
 
+    /** Load the default chaser that is programmed into the controller. */
     $scope.defChaser = function() {
-        sparkapi.callFunction($scope.device.id, 'setChaser', null).then(
+        sparkapi.callFunction($scope.device.id, 'defChaser', null).then(
             function(result) {},
             function(error) {}
         );
@@ -110,10 +111,10 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
     }
 
 
-    $scope.sentColor1 = "#0000FF";
-    $scope.color1 = "#0000FF";
-    $scope.sentColor2 = "#00FFFF";
-    $scope.color2 = "#00FFFF";
+    $scope.sentColor1 = "#0000ff";
+    $scope.color1 = "#0000ff";
+    $scope.sentColor2 = "#00ffff";
+    $scope.color2 = "#00ffff";
     $scope.inlinesettings = {
         control: 'wheel',
         inline: true
@@ -130,6 +131,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
 
         colorStop = $interval(function () {
             if($scope.color1 != $scope.sentColor1 || $scope.color2 != $scope.sentColor2) {
+                console.log("Color1:" + $scope.color1 + " Color2:" + $scope.color2);
                 $scope.setColors([gammaCorrect($scope.color1), gammaCorrect($scope.color2)]);
                 $scope.sentColor1 = $scope.color1;
                 $scope.sentColor2 = $scope.color2;
