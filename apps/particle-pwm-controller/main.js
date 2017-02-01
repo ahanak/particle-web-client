@@ -84,7 +84,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
             $interval.cancel(brightnessStop);
             brightnessStop = null;
         }
-        if($scope.brightness >= 0) {
+        if($scope.brightness >= 0 && $scope.device != null) {
             brightnessStop = $interval(function () {
                 //console.log("Publishing " + $scope.brightness.toString());
                 sparkapi.callFunction($scope.device.id, 'setMaster', $scope.brightness.toString());
@@ -119,9 +119,10 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
         inline: true
     };
     var colorStop = null;
-    $scope.$watch('color1', watchColor());
-    $scope.$watch('color2', watchColor());
+    $scope.$watch('color1', watchColor);
+    $scope.$watch('color2', watchColor);
     function watchColor() {
+        console.log("A color changed!");
         if(colorStop != null) {
             $interval.cancel(colorStop);
             colorStop = null;
@@ -129,7 +130,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
 
         colorStop = $interval(function () {
             if($scope.color1 != $scope.sentColor1 || $scope.color2 != $scope.sentColor2) {
-                $scope.setColors([gammaCorrect($scope.color), gammaCorrect($scope.color)]);
+                $scope.setColors([gammaCorrect($scope.color1), gammaCorrect($scope.color2)]);
                 $scope.sentColor1 = $scope.color1;
                 $scope.sentColor2 = $scope.color2;
             }
