@@ -34,6 +34,32 @@
     <h3>Helligkeit</h3>
     <slider class="brightness-slider" ng-model="brightness" min="0" step="1" max="255" value="testOptions.value" ng-disabled="turnedOn == false"></slider>
 
+    <h3>Chaser</h3>
+    <div class="row">
+        <div class="col-sm-6 col-xs-6 equal-space">
+            <button class="btn btn-block btn-lg program btn-default"
+                    ng-click="defChaser()"
+                    ng-disabled="turnedOn == false">
+                            <span class="hidden-xs">
+                                <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                            </span>
+                Standard
+            </button>
+        </div>
+
+        <div class="col-sm-6 col-xs-6 equal-space" ng-repeat="(name, steps) in chasers">
+
+            <button class="btn btn-block btn-lg program btn-default"
+                    ng-click="setChaser(steps)"
+                    ng-disabled="turnedOn == false">
+                        <span class="hidden-xs">
+                            <i class="fa fa-tasks" aria-hidden="true"></i><br />
+                        </span>
+                {{name}}
+            </button>
+        </div>
+    </div>
+
     <!--<div ng-show="$parent.selectedDevice">-->
         <h3>Szenen</h3>
         <div class="row">
@@ -47,32 +73,6 @@
                         {{name}}
                     </button>
                 </div>
-        </div>
-
-        <h3>Chaser</h3>
-        <div class="row">
-            <div class="col-sm-6 col-xs-6 equal-space">
-                <button class="btn btn-block btn-lg program btn-default"
-                        ng-click="defChaser()"
-                        ng-disabled="turnedOn == false">
-                            <span class="hidden-xs">
-                                <i class="fa fa-tasks" aria-hidden="true"></i><br />
-                            </span>
-                    Standard
-                </button>
-            </div>
-
-            <div class="col-sm-6 col-xs-6 equal-space" ng-repeat="(name, steps) in chasers">
-
-                <button class="btn btn-block btn-lg program btn-default"
-                        ng-click="setChaser(steps)"
-                        ng-disabled="turnedOn == false">
-                        <span class="hidden-xs">
-                            <i class="fa fa-tasks" aria-hidden="true"></i><br />
-                        </span>
-                    {{name}}
-                </button>
-            </div>
         </div>
 
         <h3>Farben</h3>
