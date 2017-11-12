@@ -14,7 +14,7 @@
     <div class="row">
 
         <!-- device -->
-        <div ng-repeat="device in devices">
+        <div ng-repeat="device in devices | orderBy:'!connected + name'">
             <div class="col-md-6 col-xs-12 device">
                 <device-panel device="device">
                     <ng-include src="selectTemplate(device)"></ng-include>
