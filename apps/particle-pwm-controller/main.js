@@ -7,6 +7,11 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
     $scope.chasers = [];
     $scope.turnedOn = "unknown";
     $scope.brightness = 255;
+    $scope.hasWhite = false;
+    $scope.white = 0;
+    $scope.hasBrightnessChanged = false;
+    $scope.hasWhiteChanged = false;
+
 
     $http.get('apps/particle-pwm-controller/scenes.json').then(function(res) {
         $scope.scenes = res.data;
@@ -34,6 +39,16 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
             },
             function(error) {}
         );
+    };
+
+    /** Turn the device on and show white light. */
+    $scope.showWhite = function() {
+        if(!$scope.turnedOn) {$scope.turnOn();}
+        $scope.brightness = 255;
+        $scope.hasBrightnessChanged = true;
+        $scope.setColors([0,0]);
+        $scope.white = 255;
+        $scope.hasWhiteChanged = true;
     };
 
     /** Set the specified colors. */
@@ -75,6 +90,7 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
         $scope.device = device;
         if (device != null) {
             //sparkapi.registerDeviceEvents($scope.device.id, onEvent);
+            $scope.hasWhite = (device.functions.indexOf("setWhite") >= 0);
         }
     };
 
@@ -94,11 +110,38 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
             $interval.cancel(brightnessStop);
             brightnessStop = null;
         }
-        if($scope.brightness >= 0 && $scope.device != null) {
+        if($scope.brightness != 255) {$scope.hasBrightnessChanged = true;}
+        if($scope.brightness >= 0 && $scope.device != null  && $scope.hasBrightnessChanged) {
             brightnessStop = $interval(function () {
                 //console.log("Publishing " + $scope.brightness.toString());
                 sparkapi.callFunction($scope.device.id, 'setMaster', $scope.brightness.toString());
             }, 300, 1);
+        }
+    });
+
+    /**
+     * The slider movement means that $scope.white changes very often.
+     * We do not want to create an http request each time, so we filter that.
+     *
+     * If the white slider has been moved, wait 300ms for further movements.
+     * If no further change happens, send the data to the device.
+     *
+     * This is done with a timer. On every slider value change, stop a maybe running timer and start a new timer,
+     * that will transmit the value after 300ms.
+     */
+    var whiteStop = null;
+    $scope.$watch('white', function(){
+        if($scope.hasWhite) {
+            if (whiteStop != null) {
+                $interval.cancel(whiteStop);
+                whiteStop = null;
+            }
+            if ($scope.white >= 0 && $scope.device != null && $scope.hasWhiteChanged) {
+                whiteStop = $interval(function () {
+                    //console.log("Publishing " + $scope.brightness.toString());
+                    sparkapi.callFunction($scope.device.id, 'setWhite', $scope.white.toString());
+                }, 300, 1);
+            }
         }
     });
 

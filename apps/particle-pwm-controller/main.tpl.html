@@ -13,7 +13,6 @@
         overflow-wrap: break-word;
         white-space: normal;
     }
-
     .brightness-slider .slider-selection {
         background: #EEEE00;
     }
@@ -31,8 +30,18 @@
         An
     </button>
 
+    <button class="btn btn-warning btn-lg equal-space" ng-click="showWhite()" ng-show="hasWhite">
+        <i class="fa fa-sun-o" aria-hidden="true"></i>
+        Warmweiß
+    </button>
+
     <h3>Helligkeit</h3>
     <slider class="brightness-slider" ng-model="brightness" min="0" step="1" max="255" value="testOptions.value" ng-disabled="turnedOn == false"></slider>
+
+    <ng-show ng-show="hasWhite">
+        <h3>Warmweiß</h3>
+        <slider class="brightness-slider" ng-model="white" min="0" step="1" max="255" ng-disabled="turnedOn == false"></slider>
+    </ng-show>
 
     <h3>Chaser</h3>
     <div class="row">
