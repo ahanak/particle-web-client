@@ -44,11 +44,12 @@ app.controller('PwmCtrl', ['$scope', '$http', '$interval', 'sparkapi', function(
     /** Turn the device on and show white light. */
     $scope.showWhite = function() {
         if(!$scope.turnedOn) {$scope.turnOn();}
-        $scope.brightness = 255;
         $scope.hasBrightnessChanged = true;
-        $scope.setColors([0,0]);
-        $scope.white = 255;
         $scope.hasWhiteChanged = true;
+
+        $scope.brightness = 255;
+        $scope.white = 255;
+        $scope.setColors([0,0]);
     };
 
     /** Set the specified colors. */
